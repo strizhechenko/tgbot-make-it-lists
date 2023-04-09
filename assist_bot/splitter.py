@@ -15,7 +15,7 @@ def split(text: str) -> list:
         for item in result:
             next_stage.extend(item.split(separator))
         result = next_stage
-    return [_numberify(w).rstrip('.').strip() for w in result if w != owner_name and not w.startswith('если')]
+    return [_numberify(w).rstrip('.').strip() for w in result if w != owner_name]
 
 
 def _numberify(text: str) -> str:
