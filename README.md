@@ -41,6 +41,15 @@
 pytest --doctest-modules
 ```
 
-## Поддержка Docker, Systemd, k8s
+## Автозапуск в systemd
+
+``` shell
+git clone https://github.com/strizhechenko/tgbot-make-it-lists.git /opt/tgbot/
+ln -sf /opt/tgbot/tgbot.service /etc/systemd/system/tgbot.service
+systemctl enable --now tgbot.service
+systemctl status tgbot.service
+```
+
+## Поддержка Docker, k8s
 
 Я не против, поддерживайте.

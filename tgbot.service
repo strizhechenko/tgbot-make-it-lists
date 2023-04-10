@@ -1,0 +1,19 @@
+[Unit]
+Description=Telegram Bot service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+RateLimitBurst=10000
+Environment="LANG=ru_RU.UTF-8"
+WorkingDirectory=/opt/tgbot/
+ExecStart=python3 main.py
+Restart=always
+RuntimeDirectory=tgbot
+KillSignal=SIGQUIT
+Type=simple
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
