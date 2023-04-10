@@ -1,9 +1,16 @@
 from assist_bot.config import owner_name
 
 
+IGNORE = {
+    'пожалуйста',
+    'если есть',
+    'плиз'
+}
+
+
 def split(text: str) -> list:
     """
-    >>> split('А, б в г, д е ж, два з, четыре к, один н и сто грамм оо ( ля ля ля или ля)')
+    >>> split('Пожалуйста, А, б в г, д е ж, два з, четыре к, один н и сто грамм оо ( ля ля ля или ля)')
     ['а', 'б в г', 'д е ж', '2 з', '4 к', '1 н', '100 грамм оо ( ля ля ля или ля)']
     >>> split('А\\nб в г')
     ['а', 'б в г']
@@ -15,7 +22,7 @@ def split(text: str) -> list:
         for item in result:
             next_stage.extend(item.split(separator))
         result = next_stage
-    return [_numberify(w).rstrip('.').strip() for w in result if w != owner_name]
+    return [_numberify(w) for w in result if w != owner_name if w not in IGNORE]
 
 
 def _numberify(text: str) -> str:
@@ -34,7 +41,7 @@ def _numberify(text: str) -> str:
     for word in words:
         if replace := translations.get(word):
             text = text.replace(word, replace)
-    return text
+    return text.rstrip('.').strip()
 
 
 def _make_translations():
