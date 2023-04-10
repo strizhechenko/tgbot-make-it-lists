@@ -11,7 +11,6 @@ class Assist:
     @staticmethod
     @dispatcher.message_handler()
     async def search(message: types.Message):
-        if message.from_user.username != owner:
-            return await message.reply("Не для вас моя роза цвела")
-        for reply in split(message.text):
-            await Assist.bot.send_message(message.chat.id, reply)
+        if message.from_user.username == owner:
+            for reply in split(message.text):
+                await Assist.bot.send_message(message.chat.id, reply)
