@@ -1,8 +1,6 @@
 ## Limits
 
-1. Bot only supports russian numeric words.
-2. I don't assume it's useful for non-russian speakers.
-3. So next parts of README are in russian only, sorry.
+Bot only supports russian numeric words. I don't assume it's useful for non-russian speakers, so next parts of README are in russian only, sorry.
 
 ## Зачем
 
