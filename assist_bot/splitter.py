@@ -14,9 +14,16 @@ def split(text: str) -> list:
     ['а', 'б в г', 'д е ж', '2 з', '4 к', '1 н', '100 грамм оо ( ля ля ля или ля)']
     >>> split('А\\nб в г')
     ['а', 'б в г']
+    >>> split('a\\nb\\nc\\nd,e')
+    ['a', 'b', 'c', 'd,e']
     """
     separators = ['. ', ', ', ' и ', '\n']
     result = [text.lower()]
+
+    # Если этот список явно разбит по строкам, не пытаемся разбивать другими способами
+    if result[0].count('\n') > 2:
+        return [w for w in result[0].split('\n') if w not in IGNORE]
+
     for separator in separators:
         next_stage = []
         for item in result:
