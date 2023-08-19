@@ -1,3 +1,5 @@
+import re
+
 from assist_bot.config import owner_name
 
 
@@ -16,20 +18,29 @@ def split(text: str) -> list:
     ['а', 'б в г']
     >>> split('a\\nb\\nc\\nd,e')
     ['a', 'b', 'c', 'd,e']
+    >>> split('a')
+    []
+    >>> split('- замерить пол для ворот\\n- написать мужику с воротами\\n')
+    ['замерить пол для ворот', 'написать мужику с воротами']
     """
     separators = ['. ', ', ', ' и ', '\n']
-    result = [text.lower()]
+    result = [text.lower().strip()]
 
-    # Если этот список явно разбит по строкам, не пытаемся разбивать другими способами
     if result[0].count('\n') > 2:
-        return [w for w in result[0].split('\n') if w not in IGNORE]
+        separators = ['\n']
 
     for separator in separators:
         next_stage = []
         for item in result:
             next_stage.extend(item.split(separator))
         result = next_stage
-    return [_numberify(w) for w in result if w != owner_name if w not in IGNORE]
+
+    final_result = [_numberify(w) for w in result if w != owner_name if w not in IGNORE]
+    if final_result == [text]:
+        return []
+
+    final_result = [re.sub(r'^- ', '', part) for part in final_result]
+    return final_result
 
 
 def _numberify(text: str) -> str:
