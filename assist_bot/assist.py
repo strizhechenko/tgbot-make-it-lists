@@ -8,12 +8,12 @@ from assist_bot.splitter import split
 
 class Assist:
     bot = Bot(token=config.TOKEN)
-    dispatcher = Dispatcher(bot=bot)
+    dispatcher = Dispatcher()
     _known_file = Path('./known.json')
     known = json.loads(_known_file.read_text(encoding='utf-8')) if _known_file.exists() else dict()
 
     @staticmethod
-    @dispatcher.message_handler()
+    @dispatcher.message()
     async def search(message: types.Message):
         if message.from_user.username == config.OWNER:
             if message.text in Assist.known:

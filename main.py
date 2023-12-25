@@ -1,9 +1,13 @@
+import asyncio
 import logging
 
 from assist_bot.assist import Assist
-from aiogram import executor
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    executor.start_polling(Assist().dispatcher)
+    assist = Assist()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(assist.dispatcher.start_polling(assist.bot))
+    loop.close()
