@@ -1,6 +1,6 @@
 import re
 
-from assist_bot.config import owner_name
+from assist_bot import config
 
 
 IGNORE = {
@@ -35,7 +35,7 @@ def split(text: str) -> list:
             next_stage.extend(item.split(separator))
         result = next_stage
 
-    final_result = [_numberify(w) for w in result if w != owner_name if w not in IGNORE]
+    final_result = [_numberify(w) for w in result if w != config.OWNER_NAME if w not in IGNORE]
     if final_result == [text]:
         return []
 
@@ -74,28 +74,28 @@ def _make_translations():
         'восемь': '8',
         'девять': '9',
     }
-    additionals = dict()
+    additional = dict()
     for key, value in _translations.items():
         if value == 10:
             continue
         if int(value) >= 5:
-            additionals[key + 'десят'] = value + '0'
-            additionals[key + 'сот'] = value + '00'
+            additional[key + 'десят'] = value + '0'
+            additional[key + 'сот'] = value + '00'
         if value in ('2', '3'):
-            additionals[key + 'дцать'] = value + '0'
+            additional[key + 'дцать'] = value + '0'
         if value in ('3', '4'):
-            additionals[key + 'ста'] = value + '00'
+            additional[key + 'ста'] = value + '00'
         if value != 2:
-            additionals[key.rstrip('ь').rstrip('е') + 'надцать'] = '1' + value
-    additionals['десять'] = '10'
-    additionals['двенадцать'] = '12'
-    additionals['четырнадцать'] = '14'
-    additionals['сорок'] = '40'
-    additionals['сто'] = '100'
-    additionals['двести'] = '200'
-    additionals['две'] = '2'
-    additionals['одну'] = '1'
-    _translations.update(additionals)
+            additional[key.rstrip('ь').rstrip('е') + 'надцать'] = '1' + value
+    additional['десять'] = '10'
+    additional['двенадцать'] = '12'
+    additional['четырнадцать'] = '14'
+    additional['сорок'] = '40'
+    additional['сто'] = '100'
+    additional['двести'] = '200'
+    additional['две'] = '2'
+    additional['одну'] = '1'
+    _translations.update(additional)
     return _translations
 
 
