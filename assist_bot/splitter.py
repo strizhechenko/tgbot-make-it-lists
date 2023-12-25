@@ -22,6 +22,8 @@ def split(text: str) -> list:
     []
     >>> split('- замерить пол для ворот\\n- написать мужику с воротами\\n')
     ['замерить пол для ворот', 'написать мужику с воротами']
+    >>> split('- [ ] замерить пол для ворот\\n- [ ] кушот\\n- [x] написать мужику с воротами\\n')
+    ['замерить пол для ворот', 'кушот']
     """
     separators = ['. ', ', ', ' и ', '\n']
     result = [text.lower().strip()]
@@ -39,7 +41,11 @@ def split(text: str) -> list:
     if final_result == [text]:
         return []
 
-    final_result = [re.sub(r'^- ', '', part) for part in final_result]
+    for pattern in (r'^- \[x\] .*$', r'^- \[ \] ', r'^- '):
+        final_result = [re.sub(pattern, '', part) for part in final_result]
+
+    final_result = [part for part in final_result if part]
+
     return final_result
 
 
