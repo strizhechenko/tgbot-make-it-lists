@@ -1,6 +1,6 @@
 import re
 
-from assist_bot import config
+from assist_bot import config  # noqa
 
 
 IGNORE = {

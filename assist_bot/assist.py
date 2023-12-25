@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from aiogram import Bot, Dispatcher, types
 
-from assist_bot import config
+from assist_bot import config  # noqa
 from assist_bot.splitter import split
 
 
