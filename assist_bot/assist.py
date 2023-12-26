@@ -43,8 +43,10 @@ class Assist:
         query = ['# Эта неделя', '## ' + day_of_week]
         text = Assist._agenda_file.read_text(encoding='utf-8')
         result = markdown_checklist_lookup(text, query)
+        results = split(result)
 
-        for reply in split(result):
-            await Assist.bot.send_message(message.chat.id, reply)
-        else:
+        if not results:
             await Assist.bot.send_message(message.chat.id, "Никаких планов")
+
+        for reply in results:
+            await Assist.bot.send_message(message.chat.id, reply)
