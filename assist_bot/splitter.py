@@ -10,6 +10,38 @@ IGNORE = {
 }
 
 
+def markdown_checklist_lookup(t: str, query: list[str]) -> str:
+    """
+    >>> markdown_checklist_lookup('# А\\n## Б\\n- Привет', ['# А', '## Б'])
+    '- Привет'
+    >>> markdown_checklist_lookup('# А\\n## Б\\n- Привет\\n# В\\n- [x] Куку', ['# В'])
+    '- [x] Куку'
+    >>> markdown_checklist_lookup('# А\\n## Б\\n- Привет', ['# X'])
+    ''
+    """
+    depth, path, result = 0, [], []
+
+    for line in t.splitlines():
+        if line.startswith('#'):
+            line_depth = line.count('#')
+
+            if line_depth > depth:
+                path.append(line)
+                depth += 1
+                continue
+
+            if line_depth < depth:
+                path.pop()
+                depth -= 1
+
+            path[-1] = line
+
+        elif path == query:
+            result.append(line)
+
+    return '\n'.join(result)
+
+
 def split(text: str) -> list:
     """
     >>> split('Пожалуйста, А, б в г, д е ж, два з, четыре к, один н и сто грамм оо ( ля ля ля или ля)')
