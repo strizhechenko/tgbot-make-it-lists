@@ -38,10 +38,11 @@ class Assist:
             await Assist.bot.send_message(message.chat.id, "Никаких планов вообще")
             return
 
-        query = Assist.markdown_query_from(message.text.lower())
+        words = ' '.join(filter(lambda x: x != 'пачкой', message.text.lower().split(' ')))
+        query = Assist.markdown_query_from(words)
         text = Assist._agenda_file.read_text(encoding='utf-8')
         result = markdown_checklist_lookup(text, query)
-        results = split(result)
+        results = ['```\n' + result + '\n```'] if 'пачкой' in message.text.lower() else split(result)
 
         if not results:
             await Assist.bot.send_message(message.chat.id, "Никаких планов")
