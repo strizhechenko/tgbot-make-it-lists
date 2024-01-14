@@ -18,6 +18,10 @@ def markdown_checklist_lookup(t: str, query: list[str]) -> str:
     '- [x] Куку'
     >>> markdown_checklist_lookup('# А\\n## Б\\n- Привет', ['# X'])
     ''
+    >>> markdown_checklist_lookup('# А\\n## Б\\n- Привет', ['# А'])
+    '- Привет'
+    >>> markdown_checklist_lookup('# А\\n## Б\\n- Привет\\n# В\\n- [x] Куку', ['# А'])
+    '- Привет'
     """
     depth, path, result = 0, [], []
 
@@ -36,7 +40,7 @@ def markdown_checklist_lookup(t: str, query: list[str]) -> str:
 
             path[-1] = line
 
-        elif path == query:
+        elif path[:len(query)] == query:
             result.append(line)
 
     return '\n'.join(result)

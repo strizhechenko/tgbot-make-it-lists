@@ -53,10 +53,7 @@ class Assist:
         text = Assist._agenda_file.read_text(encoding='utf-8')
         result = markdown_checklist_lookup(text, query)
 
-        if not result:
-            return await Assist.bot.send_message(message.chat.id, "Никаких планов")
-
-        if not do_split:
+        if result and not do_split:
             return await Assist.bot.send_message(
                 message.chat.id, Code(result).as_markdown(), parse_mode=ParseMode.MARKDOWN_V2
             )
