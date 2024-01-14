@@ -1,12 +1,19 @@
 import json
 import locale
+import logging
+import re
+
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from aiogram import Bot, Dispatcher, types
+from aiogram.utils.formatting import Code
+from aiogram.enums import ParseMode
 
 from assist_bot import config
 from assist_bot.splitter import split, markdown_checklist_lookup
+
+log = logging.getLogger(__name__)
 
 
 class Assist:
@@ -20,10 +27,13 @@ class Assist:
     @dispatcher.message()
     async def search(message: types.Message):
         if message.from_user.username == config.OWNER:
-            if message.text in Assist.known:
+            text = message.text
+            if text in Assist.known:
                 return await Assist.decompose_known(message)
-            if message.text in ('сегодня', 'завтра', 'послезавтра', 'вчера', 'эта неделя', 'следующая неделя'):
-                return await Assist.agenda(message)
+            for command in ('сегодня', 'завтра', 'послезавтра', 'вчера', 'эта неделя', 'следующая неделя'):
+                if re.match(command, text.lower()):
+                    do_split = 'пачкой' not in text.lower()
+                    return await Assist.agenda(message, do_split)
             for reply in split(message.text):
                 await Assist.bot.send_message(message.chat.id, reply)
 
@@ -33,7 +43,7 @@ class Assist:
             await Assist.bot.send_message(message.chat.id, reply)
 
     @staticmethod
-    async def agenda(message):
+    async def agenda(message, do_split: bool = True):
         if not Assist._agenda_file.exists():
             await Assist.bot.send_message(message.chat.id, "Никаких планов вообще")
             return
@@ -42,10 +52,19 @@ class Assist:
         query = Assist.markdown_query_from(words)
         text = Assist._agenda_file.read_text(encoding='utf-8')
         result = markdown_checklist_lookup(text, query)
-        results = ['```\n' + result + '\n```'] if 'пачкой' in message.text.lower() else split(result)
+
+        if not result:
+            return await Assist.bot.send_message(message.chat.id, "Никаких планов")
+
+        if not do_split:
+            return await Assist.bot.send_message(
+                message.chat.id, Code(result).as_markdown(), parse_mode=ParseMode.MARKDOWN_V2
+            )
+
+        results = split(result)
 
         if not results:
-            await Assist.bot.send_message(message.chat.id, "Никаких планов")
+            return await Assist.bot.send_message(message.chat.id, "Никаких планов")
 
         for reply in results:
             await Assist.bot.send_message(message.chat.id, reply)
